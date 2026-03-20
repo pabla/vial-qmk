@@ -1,6 +1,14 @@
 #include QMK_KEYBOARD_H
 #include "leds.c"
+#include "oneshot.h"
 #include <stdio.h>
+
+enum custom_keycodes {
+    OS_SHFT = QK_KB_0,
+    OS_CTRL,
+    OS_ALT,
+    OS_GUI,
+};
 
 // clang-format off
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -59,3 +67,43 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 		XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,       XXXXXXX,    XXXXXXX,     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX)
 };
 // clang-format on
+
+oneshot_state os_shft_state = os_up_unqueued;
+oneshot_state os_ctrl_state = os_up_unqueued;
+oneshot_state os_alt_state = os_up_unqueued;
+oneshot_state os_gui_state = os_up_unqueued;
+
+bool is_oneshot_cancel_key(uint16_t keycode)
+{
+    switch (keycode) {
+    case KC_ESC:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool is_oneshot_ignored_key(uint16_t keycode)
+{
+    switch (keycode) {
+    case MO(1):
+    case MO(2):
+    case TO(0):
+    case OS_SHFT:
+    case OS_CTRL:
+    case OS_ALT:
+    case OS_GUI:
+        return true;
+    default:
+        return false;
+    }
+}
+
+bool process_record_user(uint16_t keycode, keyrecord_t* record)
+{
+    update_oneshot(&os_shft_state, KC_LSFT, OS_SHFT, keycode, record);
+    update_oneshot(&os_ctrl_state, KC_LCTL, OS_CTRL, keycode, record);
+    update_oneshot(&os_alt_state, KC_LALT, OS_ALT, keycode, record);
+    update_oneshot(&os_gui_state, KC_LGUI, OS_GUI, keycode, record);
+    return true;
+}

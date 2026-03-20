@@ -2,6 +2,12 @@
   "name": "X.Tips V4s Keyboard",
   "lighting": ["qmk_rgblight"],
   "matrix": { "rows": 8, "cols": 7 },
+  "customKeycodes": [
+    {"name": "OS Shft", "title": "Oneshot Shift", "shortName": "OS_SHFT"},
+    {"name": "OS Ctrl", "title": "Oneshot Ctrl", "shortName": "OS_CTRL"},
+    {"name": "OS Alt",  "title": "Oneshot Alt",  "shortName": "OS_ALT"},
+    {"name": "OS GUI",  "title": "Oneshot GUI",  "shortName": "OS_GUI"}
+  ],
   "layouts": {
     "keymap": [
       [
