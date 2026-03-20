@@ -37,6 +37,22 @@ void update_oneshot(
                 *state = os_up_unqueued;
                 unregister_code(mod);
             }
+            if (!is_oneshot_ignored_key(keycode)) {
+                switch (*state) {
+                case os_up_queued:
+                    // First non-ignored keydown consumes the oneshot.
+                    *state = os_up_queued_used;
+                    break;
+                case os_up_queued_used:
+                    // Second keydown before first keyup — unregister immediately
+                    // so this key is processed without the modifier.
+                    *state = os_up_unqueued;
+                    unregister_code(mod);
+                    break;
+                default:
+                    break;
+                }
+            }
         } else {
             if (!is_oneshot_ignored_key(keycode)) {
                 // On non-ignored keyup, consider the oneshot used.
@@ -45,6 +61,7 @@ void update_oneshot(
                     *state = os_down_used;
                     break;
                 case os_up_queued:
+                case os_up_queued_used:
                     *state = os_up_unqueued;
                     unregister_code(mod);
                     break;
