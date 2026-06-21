@@ -77,6 +77,8 @@ bool is_oneshot_cancel_key(uint16_t keycode)
 {
     switch (keycode) {
     case KC_ESC:
+    case MO(1):
+    case MO(2):
         return true;
     default:
         return false;
